@@ -41,6 +41,8 @@ namespace Basic.Controllers
 
             var userPrincipal = new ClaimsPrincipal(new[] { grandmaIdentity, licenseIdentity });
 
+            //-----------------------------------------------------------------------------------//
+
             HttpContext.SignInAsync(userPrincipal);
 
             return RedirectToAction("Index");

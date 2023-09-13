@@ -1,3 +1,8 @@
+using Basic.AuthorizationRequirements;
+using Microsoft.AspNetCore.Authorization;
+using System.Net;
+using System.Security.Claims;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +13,41 @@ builder.Services.AddAuthentication("CookieAuth")
     {
         config.Cookie.Name = "Grandma.Cookie";
         config.LoginPath = "/Home/Authenticate";
+    });
+
+builder.Services.AddAuthorization(config =>
+{
+    //    var defaultAuthBuilder = new AuthorizationPolicyBuilder();
+    //    var defaultAuthPolicy = defaultAuthBuilder
+    //        .RequireAuthenticatedUser()
+    //        .RequireClaim(ClaimTypes.DateOfBirth)
+    //        .Build();
+
+    //    config.DefaultPolicy = defaultAuthPolicy;
+
+
+    //config.AddPolicy("Claim.DoB", policyBuilder =>
+    //{
+    //    policyBuilder.RequireClaim(ClaimTypes.DateOfBirth);
+    //});
+
+    config.AddPolicy("Admin", policyBuilder => policyBuilder.RequireClaim(ClaimTypes.Role,"Admin"));
+
+    config.AddPolicy("Claim.DoB", policyBuilder =>
+    {
+        policyBuilder.RequireCustomClaim(ClaimTypes.DateOfBirth);
+    });
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, CustomRequireClaimHandler>();
+
+builder.Services.AddRazorPages()
+    .AddRazorPagesOptions(config =>
+    {
+        config.Conventions.AuthorizePage("/Razor/Secured");
+        config.Conventions.AuthorizePage("/Razor/Policy");
+        config.Conventions.AuthorizeFolder("/RazorSecured");
+        config.Conventions.AllowAnonymousToPage("/RazorSecured/Anom");
     });
 
 builder.Services.AddControllersWithViews();
@@ -41,6 +81,7 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapDefaultControllerRoute();
+    endpoints.MapRazorPages();
 });
 
 
