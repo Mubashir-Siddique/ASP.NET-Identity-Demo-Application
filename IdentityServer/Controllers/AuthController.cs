@@ -4,10 +4,12 @@ namespace IdentityServer.Controllers
 {
     public class AuthController : Controller
     {
-        public IActionResult Login()
+        [HttpGet]
+        public IActionResult Login(string returnUrl)
         {
-            return View();
+            return View(new LoginViewModel { ReturnUrl = returnUrl});
         }
+        [HttpPost ]
         public IActionResult Login(LoginViewModel vm)
         {
             return View();

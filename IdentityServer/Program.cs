@@ -6,9 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-using (var scope = builder.Services.CreateScope())
-{
+WebApplication? app2 = builder.Build();
 
+var someService = app2.Services.GetService<IServiceProvider>();
+
+using (var scope = someService.CreateScope())
+{
+    var userManager = scope.ServiceProvider
+        .GetRequiredService<UserManager<IdentityUser>>();
+
+    var user = new IdentityUser("Bob");
+    userManager.CreateAsync(user,"password").GetAwaiter().GetResult();
 }
 
 // Add services to the container.
