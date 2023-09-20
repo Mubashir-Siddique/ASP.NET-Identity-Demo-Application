@@ -6,19 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-WebApplication? app2 = builder.Build();
-
-var someService = app2.Services.GetService<IServiceProvider>();
-
-using (var scope = someService.CreateScope())
-{
-    var userManager = scope.ServiceProvider
-        .GetRequiredService<UserManager<IdentityUser>>();
-
-    var user = new IdentityUser("Bob");
-    userManager.CreateAsync(user,"password").GetAwaiter().GetResult();
-}
-
 // Add services to the container.
 builder.Services.AddRazorPages();
 
@@ -56,6 +43,18 @@ builder.Services.AddControllersWithViews();
 
 
 var app = builder.Build();
+
+var someService = app.Services.GetRequiredService<IServiceScopeFactory>();
+
+using (var scope = someService.CreateScope())
+{
+    var userManager = scope.ServiceProvider
+        .GetRequiredService<UserManager<IdentityUser>>();
+
+    var user = new IdentityUser("Bob");
+    userManager.CreateAsync(user, "password").GetAwaiter().GetResult();
+}
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
