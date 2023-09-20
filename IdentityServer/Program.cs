@@ -1,9 +1,36 @@
 using IdentityServer;
+using IdentityServer.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddDbContext<AppDbContext>(config =>
+{
+    config.UseInMemoryDatabase("Memory");
+});
+
+// AddIdentity registers the services
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(config =>
+{
+    config.Password.RequiredLength = 4;
+    config.Password.RequireDigit = false;
+    config.Password.RequireNonAlphanumeric = false;
+    config.Password.RequireUppercase = false;
+    config.SignIn.RequireConfirmedEmail = true;
+})
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(config =>
+{
+    config.Cookie.Name = "IdentityServer.Cookie";
+    config.LoginPath = "/Home/Login";
+});
+
 
 builder.Services.AddIdentityServer()
     .AddInMemoryApiResources(Configuration.GetApis())
