@@ -2,8 +2,14 @@ using IdentityServer;
 using IdentityServer.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+using (var scope = builder.Services.CreateScope())
+{
+
+}
 
 // Add services to the container.
 builder.Services.AddRazorPages();
