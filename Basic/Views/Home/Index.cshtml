@@ -5,3 +5,24 @@
 }
 
 <h1>Main Page</h1>
+
+@* simple access quick checks*@
+
+@if (User.Identity.IsAuthenticated)
+{
+    <h2>User is authenticated</h2>
+}
+else
+{
+    <h2>User is not authenticated</h2>
+}
+
+@* Big guns reusable functions*@
+
+@using Microsoft.AspNetCore.Authorization;
+@inject IAuthorizationService authorizationService;
+
+@if ((await authorizationService.AuthorizeAsync(User, "Claim.DoB")).Succeeded)
+{
+    <h2>User has DoB Claim</h2>
+}      

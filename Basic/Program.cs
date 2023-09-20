@@ -1,5 +1,6 @@
 using Basic.AuthorizationRequirements;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using System.Net;
 using System.Security.Claims;
 
@@ -50,7 +51,16 @@ builder.Services.AddRazorPages()
         config.Conventions.AllowAnonymousToPage("/RazorSecured/Anom");
     });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(config =>
+{
+    var defaultAuthBuilder = new AuthorizationPolicyBuilder();
+    var defaultAuthPolicy = defaultAuthBuilder
+        .RequireAuthenticatedUser()
+        .RequireClaim(ClaimTypes.DateOfBirth)
+        .Build();
+
+    config.Filters.Add(new AuthorizeFilter(defaultAuthPolicy));
+});
 
 var app = builder.Build();
 
