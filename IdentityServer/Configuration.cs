@@ -38,7 +38,8 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile
                     },
-                    RedirectUris = { "https://localhost:44307/signin-oidc" }
+                    RedirectUris = { "https://localhost:44307/signin-oidc" },
+                    RequireConsent = false
                 }
             };
     }
