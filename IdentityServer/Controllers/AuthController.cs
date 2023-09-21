@@ -20,9 +20,20 @@ namespace IdentityServer.Controllers
             return View(new LoginViewModel { ReturnUrl = returnUrl});
         }
         [HttpPost ]
-        public IActionResult Login(LoginViewModel vm)
+        public async Task<IActionResult> Login(LoginViewModel vm)
         {
             // Check if the model is valid
+
+            var result = await _signInManager.PasswordSignInAsync(vm.Username, vm.Password, false, false);
+
+            if (result.Succeeded)
+            {
+                return Redirect(vm.ReturnUrl);
+            }
+            else if (result.IsLockedOut)
+            {
+
+            }
             return View();
         }
     }
