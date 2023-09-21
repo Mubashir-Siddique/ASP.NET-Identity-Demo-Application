@@ -34,6 +34,7 @@ builder.Services.ConfigureApplicationCookie(config =>
 
 
 builder.Services.AddIdentityServer()
+    .AddAspNetIdentity<IdentityUser>()
     .AddInMemoryApiResources(Configuration.GetApis())
     .AddInMemoryIdentityResources(Configuration.GetIdentityResources())
     .AddInMemoryClients(Configuration.GetClients())
